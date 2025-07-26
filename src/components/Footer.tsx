@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Twitter, Settings } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Twitter, Settings, ChevronDown } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 import AdminPanel from './AdminPanel';
 const Footer = () => {
   const [adminPanelOpen, setAdminPanelOpen] = useState(false);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [clickCount, setClickCount] = useState(0);
+  const [quickLinksOpen, setQuickLinksOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const isMobile = useIsMobile();
   const handleAdminClick = () => {
     setClickCount(prev => prev + 1);
     if (clickCount === 1) {
@@ -100,14 +105,34 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-3 sm:space-y-4">
-            <h4 className="font-display font-bold text-base sm:text-lg text-secondary-foreground mb-3 sm:mb-4">Quick Links</h4>
-            <ul className="space-y-1.5 sm:space-y-2">
-              {quickLinks.map((link, index) => <li key={index}>
-                  <a href={link.href} className="font-military text-sm sm:text-base text-secondary-foreground/80 hover:text-accent transition-colors duration-200">
-                    {link.name}
-                  </a>
-                </li>)}
-            </ul>
+            {isMobile ? (
+              <Collapsible open={quickLinksOpen} onOpenChange={setQuickLinksOpen}>
+                <CollapsibleTrigger className="flex items-center justify-between w-full">
+                  <h4 className="font-display font-bold text-base text-secondary-foreground">Quick Links</h4>
+                  <ChevronDown className={`w-4 h-4 text-secondary-foreground transition-transform duration-200 ${quickLinksOpen ? 'rotate-180' : ''}`} />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-3">
+                  <ul className="space-y-1.5">
+                    {quickLinks.map((link, index) => <li key={index}>
+                        <a href={link.href} className="font-military text-sm text-secondary-foreground/80 hover:text-accent transition-colors duration-200">
+                          {link.name}
+                        </a>
+                      </li>)}
+                  </ul>
+                </CollapsibleContent>
+              </Collapsible>
+            ) : (
+              <>
+                <h4 className="font-display font-bold text-base sm:text-lg text-secondary-foreground mb-3 sm:mb-4">Quick Links</h4>
+                <ul className="space-y-1.5 sm:space-y-2">
+                  {quickLinks.map((link, index) => <li key={index}>
+                      <a href={link.href} className="font-military text-sm sm:text-base text-secondary-foreground/80 hover:text-accent transition-colors duration-200">
+                        {link.name}
+                      </a>
+                    </li>)}
+                </ul>
+              </>
+            )}
           </div>
 
           {/* Services */}
@@ -115,29 +140,64 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="space-y-3 sm:space-y-4 sm:col-span-2 lg:col-span-1">
-            <h4 className="font-display font-bold text-base sm:text-lg text-secondary-foreground mb-3 sm:mb-4">Contact Us</h4>
-            <div className="space-y-2.5 sm:space-y-3">
-              <div className="flex items-center space-x-3">
-                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="font-military text-sm sm:text-base text-secondary-foreground font-semibold">09555672389</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="font-military text-sm sm:text-base text-secondary-foreground/80 break-all">swatfitnesspaintball@gmail.com</span>
-              </div>
-              <div className="flex items-start space-x-3">
-                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-accent mt-1 flex-shrink-0" />
-                <span className="font-military text-sm sm:text-base text-secondary-foreground/80">
-                  Arzab bldg. Poinsettia Ave.<br />Brgy. Pampang, Angeles City, Philippines
-                </span>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-accent mt-1 flex-shrink-0" />
-                <span className="font-military text-sm sm:text-base text-secondary-foreground/80">
-                  Monday-Sunday: 8AM-5PM
-                </span>
-              </div>
-            </div>
+            {isMobile ? (
+              <Collapsible open={contactOpen} onOpenChange={setContactOpen}>
+                <CollapsibleTrigger className="flex items-center justify-between w-full">
+                  <h4 className="font-display font-bold text-base text-secondary-foreground">Contact Us</h4>
+                  <ChevronDown className={`w-4 h-4 text-secondary-foreground transition-transform duration-200 ${contactOpen ? 'rotate-180' : ''}`} />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-3">
+                  <div className="space-y-2.5">
+                    <div className="flex items-center space-x-3">
+                      <Phone className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="font-military text-sm text-secondary-foreground font-semibold">09555672389</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Mail className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="font-military text-sm text-secondary-foreground/80 break-all">swatfitnesspaintball@gmail.com</span>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <MapPin className="w-4 h-4 text-accent mt-1 flex-shrink-0" />
+                      <span className="font-military text-sm text-secondary-foreground/80">
+                        Arzab bldg. Poinsettia Ave.<br />Brgy. Pampang, Angeles City, Philippines
+                      </span>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <Clock className="w-4 h-4 text-accent mt-1 flex-shrink-0" />
+                      <span className="font-military text-sm text-secondary-foreground/80">
+                        Monday-Sunday: 8AM-5PM
+                      </span>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            ) : (
+              <>
+                <h4 className="font-display font-bold text-base sm:text-lg text-secondary-foreground mb-3 sm:mb-4">Contact Us</h4>
+                <div className="space-y-2.5 sm:space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
+                    <span className="font-military text-sm sm:text-base text-secondary-foreground font-semibold">09555672389</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
+                    <span className="font-military text-sm sm:text-base text-secondary-foreground/80 break-all">swatfitnesspaintball@gmail.com</span>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-accent mt-1 flex-shrink-0" />
+                    <span className="font-military text-sm sm:text-base text-secondary-foreground/80">
+                      Arzab bldg. Poinsettia Ave.<br />Brgy. Pampang, Angeles City, Philippines
+                    </span>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-accent mt-1 flex-shrink-0" />
+                    <span className="font-military text-sm sm:text-base text-secondary-foreground/80">
+                      Monday-Sunday: 8AM-5PM
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
